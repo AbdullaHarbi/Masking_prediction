@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .upload-container {
+            text-align: center;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .result-container {
+            margin-top: 30px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container upload-container">
+    <h2 class="mx-auto">Upload schema file</h2>
+    <form method="post" enctype="multipart/form-data" onsubmit="return validateForm()">
+        <div class="form-group mx-auto">
+            <label for="file">Select a file (XLSX only):</label>
+            <input type="file" class="form-control" name="file" id="file" accept=".xlsx" required onchange="enableUploadButton()">
+        </div>
+        <div class="form-group mx-auto">
+            <label for="colorSelector">Select an algorithm:</label>
+            <select id="colorSelector" name="algorithm" required onchange="enableUploadButton()">
+                <option value="" disabled selected>Select a similarity algorithm</option>
+                <option value="Jaro–Winkler">Jaro–Winkler</option>
+                <option value="Cosine">Cosine</option>
+                <option value="Ratcliff-Obershelp">Ratcliff-Obershelp</option>
+                <option value="Custom algorithm">Custom algorithm</option>
+            </select>
+        </div>
+        <div class="form-group mx-auto">
+            <button type="submit" class="btn btn-primary" id="uploadButton" disabled>Upload</button>
+        </div>
+    </form>
+
+    <script>
+        function enableUploadButton() {
+            var fileInput = document.getElementById("file");
+            var colorSelector = document.getElementById("colorSelector");
+            var uploadButton = document.getElementById("uploadButton");
+
+            if (fileInput.files.length > 0 && colorSelector.value !== "") {
+                uploadButton.disabled = false;
+            } else {
+                uploadButton.disabled = true;
+            }
+        }
+
+        function validateForm() {
+            // Add additional validation logic if needed
+            return true; // Return true to submit the form
+        }
+    </script>
+</div>
+
+<div class="container result-container">
+    <h2 class="mx-auto">Result</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Table Name</th>
+            <th>Attribute Name</th>
+            <th>Masking flag In Schema</th>
+            <th>Prediction Result</th>
+            <th>%</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="metadataReslt : ${data}">
+            <td th:text="${metadataReslt.tablename}"></td>
+            <td th:text="${metadataReslt.attributename}"></td>
+            <td th:text="${metadataReslt.maskingValueInSchema}"></td>
+            <td th:text="${metadataReslt.resultType}"></td>
+            <td th:text="${metadataReslt.percentage}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
